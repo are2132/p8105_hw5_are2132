@@ -133,22 +133,26 @@ sim_rejects %>%
 Power increases as effect size increases. In this example, effect size is the true value of $\beta$~1~ - the value of $\beta$~1~ in the null hypothesis, which here is 0. This makes sense because as the true value of $\beta$~1~ increases it gets further from the null value so we should correctly reject the null more often.
 
 ### Plot of Estimated vs. Actual Beta
-```{r}
-sim_results %>% 
+```{r fig.width=14}
+plot1 = sim_results %>% 
   group_by(beta_list) %>% 
   summarize(
     avg_beta = mean(estimate)
   ) %>% 
   ggplot(aes(x = beta_list, y = avg_beta)) + geom_point() +
+  ggtitle("All Simulations")
   xlab("True Beta 1") + ylab("Average Beta 1 Estimate")
 
-sim_rejects %>% 
+plot2 = sim_rejects %>% 
   group_by(beta_list) %>% 
   summarize(
     avg_beta = mean(estimate)
   ) %>% 
   ggplot(aes(x = beta_list, y = avg_beta)) + geom_point() +
+  ggtitle("Simulations where Null Rejected") +
   xlab("True Beta 1") + ylab("Average Beta 1 Estimate")
+
+gridExtra::grid.arrange(plot1, plot2, ncol = 2)
 ```
 
 The second plot shows the average value of the estimated $\beta$~1~ vs. the actual $\beta$~1~ for the `r nrow(sim_rejects)` simulations where we would reject the null. Unlike the first plot, which considers all the simulations, these estimates are not very close to the actual $\beta$~1~ values. This is because rejecting the null means that the estimate for $\beta$~1~ is not close to the null value of 0, so these are outlier values for $\beta$~1~ which may be very high.
